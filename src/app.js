@@ -9,11 +9,9 @@ export async function getInitialState() {
 export const layout = () => {
   return {
     title: '小曼同学',
-    logo: 'https://img.alicdn.com/tfs/TB1YHEpwUT1gK0jSZFhXXaAtVXa-28-27.svg',
+    logo: './favicon.png',
     menu: {
       locale: false,
     },
-    logout: () => {},
-    rightRender: () => <span>李雨健</span>,
   };
 };

@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useLocation, connect } from 'umi';
 import { Avatar, Space, Button, Statistic, Alert  } from 'antd'
 import { UserOutlined, RedoOutlined, CopyOutlined, ArrowUpOutlined } from '@ant-design/icons';
 import { useXAgent, useXChat, Sender, Bubble, XRequest, Welcome  } from '@ant-design/x';
@@ -24,7 +25,10 @@ const {create} = XRequest({
 //ai头像
 const AvatarUrl = "https://taioassets.oss-cn-beijing.aliyuncs.com/Pics/DongMultiFruit/aiLogo.png"
 
-const aiDialogue = () => {
+const AIDialogue = () => {
+  const stateParams = useLocation();
+  const { value: defaultValue } = stateParams.state;
+
   const listRef = React.useRef(null);
   const [value, setValue] = useState("");
   const [loading, setLoading] = useState(false);
@@ -124,18 +128,17 @@ const aiDialogue = () => {
     }
   });
 
+  useEffect(() => {
+    if(defaultValue) {
+      setLoading(true);
+      onRequest(defaultValue)
+    }
+  }, [defaultValue]);
+
   return (
-    <PageContainer ghost>
-      <div className='aiDialogue'>
-        <Welcome
-          style={{
-            marginBottom: '12px',
-            backgroundImage: 'linear-gradient(97deg, rgba(90,196,255,0.12) 0%, rgba(174,136,255,0.12) 100%)'
-          }}
-          icon="https://taioassets.oss-cn-beijing.aliyuncs.com/Pics/DongMultiFruit/aiLogo.png"
-          title="你好, 我是小曼同学"
-          description="服务生成的所有内容均由人工智能模型生成，其生成内容的准确性和完整性无法保证，不代表我们的态度或观点。希望在您学习的道路上，能够提供您最多的帮助~"
-        />
+    <PageContainer
+      title={<div className="gradient-text">欢迎使用小曼同学</div>}>
+      <div className='AIDialogue'>
         <Bubble.List
           ref={listRef}
           className="myBubbleList"
@@ -161,4 +164,4 @@ const aiDialogue = () => {
   );
 };
 
-export default aiDialogue;
+export default AIDialogue;
