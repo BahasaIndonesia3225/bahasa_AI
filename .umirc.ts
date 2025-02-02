@@ -10,7 +10,7 @@ export default defineConfig({
   initialState: {},
   request: {},
   layout: {},
-  outputPath: 'dist',
+  outputPath: 'ptdchatbot.cn',
   routes: [
     {
       path: '/',
