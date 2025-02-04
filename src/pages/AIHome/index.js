@@ -2,9 +2,27 @@ import React, { useState } from 'react';
 import { useNavigate } from 'umi';
 import { Avatar, Flex, Divider, Button  } from 'antd';
 import { Prompts, Sender } from '@ant-design/x';
-import { BulbOutlined } from '@ant-design/icons';
+import {
+  BulbOutlined,
+  InfoCircleOutlined,
+  RocketOutlined,
+  SmileOutlined,
+  WarningOutlined,
+  CoffeeOutlined,
+  FireOutlined
+} from '@ant-design/icons';
 import { PageContainer } from '@ant-design/pro-components';
 import "./index.less";
+
+const iconList = [
+  <BulbOutlined style={{ color: '#FFD700' }} />,
+  <InfoCircleOutlined style={{ color: '#1890FF' }} />,
+  <RocketOutlined style={{ color: '#722ED1' }} />,
+  <SmileOutlined style={{ color: '#52C41A' }} />,
+  <WarningOutlined style={{ color: '#FF4D4F' }} />,
+  <CoffeeOutlined style={{ color: '#964B00' }} />,
+  <FireOutlined style={{ color: '#FF4D4F' }} />,
+]
 
 //设置提示
 import { PromptData } from './promptsData.js';
@@ -13,7 +31,7 @@ const PromptData_ = PromptData.sort(() => Math.random() - 0.5).slice(0, randomNu
 const items = PromptData_.map((txt, index) => {
   return {
     key: index,
-    icon: <BulbOutlined style={{ color: '#FFD700' }} />,
+    icon: iconList[index],
     description: txt,
   }
 })

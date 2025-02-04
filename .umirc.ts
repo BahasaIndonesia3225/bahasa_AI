@@ -8,36 +8,23 @@ export default defineConfig({
   access: {},
   model: {},
   initialState: {},
-  request: {},
+  request: {
+    dataField: ''
+  },
   layout: {},
   outputPath: 'ptdchatbot.cn',
+  proxy: {
+    '/prod-api': {
+      'target': 'http://damin.portuguesa.cn/prod-api',
+      'changeOrigin': true,
+      'pathRewrite': { '^/prod-api' : '' },
+    }
+  },
   routes: [
-    {
-      path: '/',
-      redirect: '/AIHome',
-    },
-    {
-      name: 'AI主页',
-      path: '/AIHome',
-      component: './AIHome',
-      layout: false
-    },
-    {
-      name: 'AI对话',
-      path: '/AIDialogue',
-      component: './AIDialogue',
-      layout: false
-    },
-    {
-      name: '单词卡',
-      path: '/access',
-      component: './Access',
-    },
-    {
-      name: '翻译',
-      path: '/table',
-      component: './Table',
-    },
+    { path: '/', redirect: '/AIHome' },
+    { name: 'AI主页', path: '/AIHome', component: './AIHome', layout: false },
+    { name: 'AI对话', path: '/AIDialogue', component: './AIDialogue', layout: false },
+    { name: '多邻果', path: '/MultiFruit', component: './MultiFruit', layout: false },
   ],
   npmClient: 'pnpm',
 });

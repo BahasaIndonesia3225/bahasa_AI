@@ -22,9 +22,6 @@ const {create} = XRequest({
   model: 'qwen-plus',
 });
 
-//ai头像
-const AvatarUrl = "https://taioassets.oss-cn-beijing.aliyuncs.com/Pics/DongMultiFruit/aiLogo.png"
-
 const AIDialogue = () => {
   const stateParams = useLocation();
   const { value: defaultValue } = stateParams.state;
@@ -35,16 +32,30 @@ const AIDialogue = () => {
 
   //复制
   const handleCopyAnswer = () => {
-    copy(333);
+    const { content } = items[items.length - 1];
+    copy(content);
   }
 
   //重新生成
-  const handleRepeatAnswer = () => {}
+  const handleRepeatAnswer = () => {
+    const { content } = items[items.length - 2];
+    setValue('');
+    setLoading(true);
+    onRequest(content)
+  }
+
+  //通话滚动顶部
+  const handleScrollBubble = () => {
+    listRef.current?.scrollTo({
+      key: 0,
+      block: 'nearest',
+    });
+  }
 
   const roles = {
     ai: {
       placement: 'start',
-      avatar: { icon: <Avatar src={AvatarUrl} /> },
+      avatar: { icon: <Avatar src={"https://taioassets.oss-cn-beijing.aliyuncs.com/Pics/DongMultiFruit/aiLogo.png"} /> },
       typing: { step: 5, interval: 20 },
       className: "aiBubble",
       style: {
@@ -77,20 +88,11 @@ const AIDialogue = () => {
     },
   }
 
-  //通话滚动顶部
-  const handleScrollBubble = () => {
-    listRef.current?.scrollTo({
-      key: 0,
-      block: 'nearest',
-    });
-  }
-
   const [agent] = useXAgent({
     request: async (info, callbacks) => {
       const { messages, message } = info;
       const { onUpdate } = callbacks;
       let content = '';
-
       try {
         create(
           {
