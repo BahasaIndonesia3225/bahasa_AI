@@ -84,15 +84,6 @@ const AIHome = () => {
             onSubmit={() => handleSubmit()}
           />
         </Flex>
-        <div className="bahasaindoFooter">
-          <div className="friendLink">
-            <span onClick={() => dumpLink('youtube')}>东东印尼语YouTube</span>
-            <span onClick={() => dumpLink('tiktok')}>东东印尼语抖音</span>
-          </div>
-          <p>
-            D 2019-2024 PT BahasaDona All rights reserved
-          </p>
-        </div>
       </div>
     </PageContainer>
   )
