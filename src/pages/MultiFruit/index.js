@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'umi';
-import { Alert, Flex, Divider, Button, Spin, Space, Image, Col, Row, Card, List, Typography, Modal } from 'antd';
+import { Alert, Flex, message, Image, Col, Row, Card, List, Typography, Modal, Space } from 'antd';
 import { LockFilled, UnlockOutlined } from '@ant-design/icons';
 import { PageContainer } from '@ant-design/pro-components';
 import service from '../../services';
@@ -20,14 +20,23 @@ const MultiFruit = () => {
   }
   //获取章节题目
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [sectionsList, setSectionsList] = useState([]);
   const showModal = () => { setIsModalOpen(true);};
-  const handleOk = () => { setIsModalOpen(false);};
-  const handleCancel = () => { setIsModalOpen(false);};
   const getSectionsListMethod = async (id, flag) => {
+    if(flag === 0) {
+      message.warning('请先完成前面的关卡');
+      return
+    }
     const { data = [] } = await service.MultiFruitApi.getSectionsList({category: id});
-    console.log(data)
+    setSectionsList(data)
     showModal()
   }
+  const handleOk = () => {
+    setIsModalOpen(false);
+  };
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  };
 
   return (
     <PageContainer
@@ -68,7 +77,9 @@ const MultiFruit = () => {
                                 key={id}
                                 onClick={() => getSectionsListMethod(id, flag)}>
                                 <Typography.Text>{name}</Typography.Text>
-                                {(flag === 0) ? <LockFilled/> : <UnlockOutlined />}
+                                {(flag === 0) ?
+                                  <LockFilled style={{ fontSize: '16px', color: '#1677ff' }}/> :
+                                  <UnlockOutlined style={{ fontSize: '16px', color: '#ff4d4f' }} />}
                               </List.Item>
                             )}>
                           </List>
@@ -82,14 +93,29 @@ const MultiFruit = () => {
           }
         </Row>
         <Modal
-          title="输入你听到的内容"
+          width={{ xs: '90%', sm: '90%', md: 600, lg: 800, xl: 800, xxl: 800 }}
+          title="请回答以下题目"
           open={isModalOpen}
           onOk={handleOk}
           onCancel={handleCancel}>
-          <QuestionType1 />
-          <QuestionType2 />
-          <QuestionType3 />
-          <QuestionType4 />
+          <Row gutter={[16, 16]}>
+            {
+              sectionsList.map((item, index) => {
+                //听写1、翻译2、选图3、选词4
+                const { id, title, analysis, type, url, questionOptions } = item;
+                let renderComponent = null;
+                if(type === '1') renderComponent = <QuestionType1 key={id} data={item} />;
+                if(type === '2') renderComponent = <QuestionType2 key={id} data={item} />;
+                if(type === '3') renderComponent = <QuestionType3 key={id} data={item} />;
+                if(type === '4') renderComponent = <QuestionType4 key={id} data={item} />;
+                return (
+                  <Col key={id} xs={24} sm={24} md={12} lg={12} xl={12}>
+                    {renderComponent}
+                  </Col>
+                )
+              })
+            }
+          </Row>
         </Modal>
       </div>
     </PageContainer>

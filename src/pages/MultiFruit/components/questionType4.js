@@ -1,7 +1,15 @@
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'umi';
+import { Card, Tag, Divider, Button } from 'antd';
+import { RedoOutlined } from '@ant-design/icons';
+
 export default () => {
   return (
-    <div>
-      题目
-    </div>
+    <Card
+      extra={<Button size="small">重做</Button>}
+      title="请你写出正确单词"
+      size="small">
+
+    </Card>
   )
 };

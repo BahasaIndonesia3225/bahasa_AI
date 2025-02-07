@@ -21,7 +21,7 @@ export default defineConfig({
     }
   },
   routes: [
-    { path: '/', redirect: '/AIHome' },
+    { path: '/', redirect: '/MultiFruit' },
     { name: 'AI主页', path: '/AIHome', component: './AIHome', layout: false },
     { name: 'AI对话', path: '/AIDialogue', component: './AIDialogue', layout: false },
     { name: '多邻果', path: '/MultiFruit', component: './MultiFruit', layout: false },
