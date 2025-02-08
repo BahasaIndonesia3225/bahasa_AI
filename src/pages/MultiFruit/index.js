@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, forwardRef  } from 'react';
 import { useNavigate } from 'umi';
 import { Alert, Flex, message, Image, Col, Row, Card, List, Typography, Modal, Space } from 'antd';
 import { LockFilled, UnlockOutlined } from '@ant-design/icons';
@@ -32,7 +32,7 @@ const MultiFruit = () => {
     showModal()
   }
   const handleOk = () => {
-    setIsModalOpen(false);
+    // setIsModalOpen(false);
   };
   const handleCancel = () => {
     setIsModalOpen(false);
@@ -103,14 +103,15 @@ const MultiFruit = () => {
               sectionsList.map((item, index) => {
                 //听写1、翻译2、选图3、选词4
                 const { id, title, analysis, type, url, questionOptions } = item;
-                let renderComponent = null;
-                if(type === '1') renderComponent = <QuestionType1 key={id} data={item} />;
-                if(type === '2') renderComponent = <QuestionType2 key={id} data={item} />;
-                if(type === '3') renderComponent = <QuestionType3 key={id} data={item} />;
-                if(type === '4') renderComponent = <QuestionType4 key={id} data={item} />;
+                //根据type类型，渲染不同类型组件
+                let RenderComponent = null;
+                if(type === '1') RenderComponent = <QuestionType1 key={id} data={item} />;
+                if(type === '2') RenderComponent = <QuestionType2 key={id} data={item} />;
+                if(type === '3') RenderComponent = <QuestionType3 key={id} data={item} />;
+                if(type === '4') RenderComponent = <QuestionType4 key={id} data={item} />;
                 return (
                   <Col key={id} xs={24} sm={24} md={12} lg={12} xl={12}>
-                    {renderComponent}
+                    {RenderComponent}
                   </Col>
                 )
               })

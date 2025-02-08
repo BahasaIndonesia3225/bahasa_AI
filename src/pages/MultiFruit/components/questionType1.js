@@ -51,9 +51,18 @@ export default (params) => {
     audio.load()
   }
 
+  //判断是否正确
+  const [isTrue, setIsTrue] = useState(true);
+  const judgeResult = () => {
+    const a = topWordArray.join(' ');
+    const isTrue = a === title;
+    setIsTrue(isTrue);
+    return isTrue;
+  }
+
   return (
     <Card
-      style={{ backgroundColor: '#f6ffed' }}
+      style={{ backgroundColor: isTrue ? '#fff' : '#f6ffed' }}
       extra={
         <Space>
           <Button
