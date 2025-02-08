@@ -11,7 +11,9 @@ export default defineConfig({
   request: {
     dataField: ''
   },
-  layout: {},
+  layout: {
+
+  },
   outputPath: 'ptdchatbot.cn',
   proxy: {
     '/prod-api': {

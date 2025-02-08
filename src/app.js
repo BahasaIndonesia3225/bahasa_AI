@@ -9,8 +9,8 @@ export async function getInitialState() {
 
 export const layout = () => {
   return {
-    title: '小曼同学',
-    logo: './favicon.png',
+    title: '学习系统',
+    logo: 'https://taioassets.oss-cn-beijing.aliyuncs.com/Pics/DongDictionary/icon_indonesia.png',
     menu: {
       locale: false,
     },
