@@ -5,7 +5,6 @@ import { RedoOutlined, PlayCircleOutlined } from '@ant-design/icons';
 
 const tagStyle = {
   height: 22,
-  minWidth: 60,
   cursor: 'pointer'
 }
 
@@ -83,7 +82,7 @@ const QuestionType1 = forwardRef((props, ref) => {
       }
       title={
         <Space>
-          <span>"请输入你听到的内容"</span>
+          <span>请输入你听到的内容</span>
           {
             typeof isCorrect === 'boolean' && (
               isCorrect ? <Tag color="#f50">正确</Tag> : <Tag color="#2db7f5">错误</Tag>

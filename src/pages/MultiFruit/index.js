@@ -27,9 +27,9 @@ const MultiFruit = () => {
   const [sectionsList, setSectionsList] = useState([]);
   const showModal = () => { setIsModalOpen(true);};
   const getSectionsListMethod = async (id, flag) => {
-    if(flag === 0) {
-      return message.warning('请先完成前面的关卡');
-    }
+    // if(flag === 0) {
+    //   return message.warning('请先完成前面的关卡');
+    // }
     try {
       const { data = [] } = await service.MultiFruitApi.getSectionsList({category: id});
       setSectionsList(data)
@@ -70,7 +70,7 @@ const MultiFruit = () => {
             stageList.map((item, index) => {
               const {id, name, introduce, pic, children} = item;
               return (
-                <Col key={id} xs={24} sm={24} md={12} lg={8} xl={6}>
+                <Col key={id} xs={24} sm={24} md={12} lg={12} xl={8}>
                   <Card title={`${index + 1}. ${name}`}>
                     <Alert
                       style={{ marginBottom: 16 }}
