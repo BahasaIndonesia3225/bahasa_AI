@@ -64,7 +64,7 @@ const QuestionType3 = forwardRef((props, ref) => {
           setIsCorrect(correct === "1")
         }}
       >
-        <Row gutter={16}>
+        <Row gutter={4}>
           {
             questionOptions.map(({ id, content, correct, url }, index) => (
               <Col span={12} key={id}>

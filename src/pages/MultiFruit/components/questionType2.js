@@ -1,6 +1,5 @@
 import React, { useState, useEffect, forwardRef, useImperativeHandle } from 'react';
-import { useNavigate } from 'umi';
-import { Card, Tag, Divider, Button, Space, message, Alert } from 'antd';
+import { Card, Tag, Divider, Button, Space, message, Alert, Flex } from 'antd';
 import { RedoOutlined, PlayCircleOutlined } from '@ant-design/icons';
 
 const tagStyle = {
@@ -92,26 +91,30 @@ const QuestionType2 = forwardRef((props, ref) => {
       }
       size="small">
       <Alert message={analysis} type="success" style={{ marginBottom: 16 }} />
-      { topWordArray.map((word, index) => (
-        <Tag
-          key={index}
-          style={tagStyle}>
-          {word}
-        </Tag>
-      )) }
+      <Flex gap="4px 0" wrap>
+        { topWordArray.map((word, index) => (
+          <Tag
+            key={index}
+            style={tagStyle}>
+            {word}
+          </Tag>
+        )) }
+      </Flex>
       <Divider
         dashed
         style={{ borderColor: '#7cb305', fontSize: 12, color: '#cccccc', margin: '8px 0' }}>
         根据音频，将单词按顺序排列
       </Divider>
-      { bottomWordArray.map((word, index) => (
-        <Tag
-          onClick={() => { handleSelectWord(word)} }
-          key={index}
-          style={tagStyle} >
-          {word}
-        </Tag>
-      )) }
+      <Flex gap="4px 0" wrap>
+        { bottomWordArray.map((word, index) => (
+          <Tag
+            onClick={() => { handleSelectWord(word)} }
+            key={index}
+            style={tagStyle} >
+            {word}
+          </Tag>
+        )) }
+      </Flex>
     </Card>
   )
 })

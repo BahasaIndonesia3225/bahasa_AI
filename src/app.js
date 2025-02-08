@@ -4,7 +4,7 @@ let headers = { Authorization: "" }
 export async function getInitialState() {
   const { token } = await service.MultiFruitApi.login({username: 'dong', password: 'dong'});
   headers.Authorization = token;
-  return { name: '@umijs/max' };
+  return { name: '你好！' };
 }
 
 export const layout = () => {
