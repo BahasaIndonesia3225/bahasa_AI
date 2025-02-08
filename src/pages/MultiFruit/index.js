@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, forwardRef  } from 'react';
+import React, { useState, useEffect, useRef, useCallback  } from 'react';
 import { useNavigate } from 'umi';
 import { Alert, Flex, message, Image, Col, Row, Card, List, Typography, Modal, Space } from 'antd';
 import { LockFilled, UnlockOutlined } from '@ant-design/icons';
@@ -15,8 +15,12 @@ const MultiFruit = () => {
   const [stageList, setStageList] = useState([]);
   useEffect(() => { getStageListMethod() }, [])
   const getStageListMethod = async () => {
-    const { rows, total } = await service.MultiFruitApi.getStageList();
-    setStageList(rows);
+    try {
+      const { rows, total } = await service.MultiFruitApi.getStageList();
+      setStageList(rows);
+    } catch (error) {
+      message.error('获取阶段列表失败，请稍后再试');
+    }
   }
   //获取章节题目
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -24,18 +28,37 @@ const MultiFruit = () => {
   const showModal = () => { setIsModalOpen(true);};
   const getSectionsListMethod = async (id, flag) => {
     if(flag === 0) {
-      message.warning('请先完成前面的关卡');
-      return
+      return message.warning('请先完成前面的关卡');
     }
-    const { data = [] } = await service.MultiFruitApi.getSectionsList({category: id});
-    setSectionsList(data)
-    showModal()
+    try {
+      const { data = [] } = await service.MultiFruitApi.getSectionsList({category: id});
+      setSectionsList(data)
+      showModal()
+    } catch (error) {
+      message.error('获取章节列表失败，请稍后再试');
+    }
   }
+  //提交题目
   const handleOk = () => {
-    // setIsModalOpen(false);
+    const results = sectionRefs.current.map((ref) => ref?.judgeResult?.());
+    if (results.some((result) => !result)) {
+      message.error('部分答案不正确，请检查后再提交');
+      return;
+    }
+    setIsModalOpen(false);
+    message.success('提交成功');
   };
+
+  //不提交题目
   const handleCancel = () => {
     setIsModalOpen(false);
+  };
+  // 创建一个 ref 数组来存储每个子组件的 ref
+  const sectionRefs = useRef([]);
+  const saveRef = (index, el) => {
+    if (el) {
+      sectionRefs.current[index] = el;
+    }
   };
 
   return (
@@ -105,13 +128,13 @@ const MultiFruit = () => {
                 const { id, title, analysis, type, url, questionOptions } = item;
                 //根据type类型，渲染不同类型组件
                 let RenderComponent = null;
-                if(type === '1') RenderComponent = <QuestionType1 key={id} data={item} />;
-                if(type === '2') RenderComponent = <QuestionType2 key={id} data={item} />;
-                if(type === '3') RenderComponent = <QuestionType3 key={id} data={item} />;
-                if(type === '4') RenderComponent = <QuestionType4 key={id} data={item} />;
+                if(type === '1') RenderComponent = QuestionType1;
+                if(type === '2') RenderComponent = QuestionType2;
+                if(type === '3') RenderComponent = QuestionType3;
+                if(type === '4') RenderComponent = QuestionType4;
                 return (
                   <Col key={id} xs={24} sm={24} md={12} lg={12} xl={12}>
-                    {RenderComponent}
+                    <RenderComponent ref={(el) => saveRef(index, el)} key={id} data={item} />
                   </Col>
                 )
               })

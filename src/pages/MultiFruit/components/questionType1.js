@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, forwardRef, useImperativeHandle } from 'react';
 import { useNavigate } from 'umi';
 import { Card, Tag, Divider, Button, Space, message } from 'antd';
 import { RedoOutlined, PlayCircleOutlined } from '@ant-design/icons';
@@ -9,8 +9,8 @@ const tagStyle = {
   cursor: 'pointer'
 }
 
-export default (params) => {
-  const { id, title, analysis, type, url, questionOptions } = params.data;
+const QuestionType1 = forwardRef((props, ref) => {
+  const { id, title, analysis, type, url, questionOptions } = props.data;
   const [topWordArray, setTopWordArray] = useState([]);
   const [bottomWordArray, setBottomWordArray] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -52,17 +52,18 @@ export default (params) => {
   }
 
   //判断是否正确
-  const [isTrue, setIsTrue] = useState(true);
+  const [isCorrect, setIsCorrect] = useState(undefined);
   const judgeResult = () => {
-    const a = topWordArray.join(' ');
-    const isTrue = a === title;
-    setIsTrue(isTrue);
-    return isTrue;
+    const isCorrect = topWordArray.join(' ') === title;
+    setIsCorrect(isCorrect);
+    return isCorrect;
   }
+
+  // 将方法绑定到 ref 上
+  useImperativeHandle(ref, () => ({ judgeResult }));
 
   return (
     <Card
-      style={{ backgroundColor: isTrue ? '#fff' : '#f6ffed' }}
       extra={
         <Space>
           <Button
@@ -80,7 +81,16 @@ export default (params) => {
           </Button>
         </Space>
       }
-      title="请输入你听到的内容"
+      title={
+        <Space>
+          <span>"请输入你听到的内容"</span>
+          {
+            typeof isCorrect === 'boolean' && (
+              isCorrect ? <Tag color="#f50">正确</Tag> : <Tag color="#2db7f5">错误</Tag>
+            )
+          }
+        </Space>
+      }
       size="small">
       { topWordArray.map((word, index) => (
         <Tag
@@ -104,4 +114,6 @@ export default (params) => {
       )) }
     </Card>
   )
-};
+})
+
+export default QuestionType1;
