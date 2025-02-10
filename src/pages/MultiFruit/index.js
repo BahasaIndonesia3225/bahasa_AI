@@ -16,7 +16,8 @@ const MultiFruit = () => {
   useEffect(() => { getStageListMethod() }, [])
   const getStageListMethod = async () => {
     try {
-      const { rows, total } = await service.MultiFruitApi.getStageList();
+      const params = { pageNum: 1, pageSize: 100 }
+      const { rows, total } = await service.MultiFruitApi.getStageList(params);
       setStageList(rows);
     } catch (error) {
       message.error('获取阶段列表失败，请稍后再试');
