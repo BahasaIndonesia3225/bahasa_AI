@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback  } from 'react';
 import { useNavigate } from 'umi';
-import { Alert, Flex, message, Image, Col, Row, Card, List, Typography, Modal, Space } from 'antd';
+import { Alert, Flex, message, Image, Col, Row, Card, List, Typography, Modal, Form, Input, Radio } from 'antd';
 import { LockFilled, UnlockOutlined } from '@ant-design/icons';
 import { PageContainer } from '@ant-design/pro-components';
 import service from '../../services';
@@ -27,9 +27,9 @@ const MultiFruit = () => {
   const [sectionsList, setSectionsList] = useState([]);
   const showModal = () => { setIsModalOpen(true);};
   const getSectionsListMethod = async (id, flag) => {
-    // if(flag === 0) {
-    //   return message.warning('请先完成前面的关卡');
-    // }
+    if(flag === 0) {
+      return message.warning('请先完成前面的关卡');
+    }
     try {
       const { data = [] } = await service.MultiFruitApi.getSectionsList({category: id});
       setSectionsList(data)
@@ -53,6 +53,7 @@ const MultiFruit = () => {
   const handleCancel = () => {
     setIsModalOpen(false);
   };
+
   // 创建一个 ref 数组来存储每个子组件的 ref
   const sectionRefs = useRef([]);
   const saveRef = (index, el) => {
@@ -61,9 +62,19 @@ const MultiFruit = () => {
     }
   };
 
+  //登录相关
+  const [form] = Form.useForm();
+  const [formValues, setFormValues] = useState();
+  const [open, setOpen] = useState(false);
+  const onCreate = (values) => {
+    console.log('Received values of form: ', values);
+    setFormValues(values);
+    setOpen(false);
+  };
+
   return (
     <PageContainer
-      title={<div className="gradient-text">印尼语东仔</div>}>
+      title={<div className="gradient-text" onClick={() => setOpen(true)}>印尼语东仔</div>}>
       <div className='MultiFruit'>
         <Row gutter={[16, 16]}>
           {
@@ -141,6 +152,58 @@ const MultiFruit = () => {
             }
           </Row>
         </Modal>
+
+        <Modal
+          open={open}
+          title="请输入东东通行证"
+          okButtonProps={{
+            autoFocus: true,
+            htmlType: 'submit',
+          }}
+          onCancel={() => setOpen(false)}
+          destroyOnClose
+          modalRender={(dom) => (
+            <Form
+              layout="vertical"
+              form={form}
+              name="form_in_modal"
+              initialValues={{
+                modifier: 'public',
+              }}
+              clearOnDestroy
+              onFinish={(values) => onCreate(values)}
+            >
+              {dom}
+            </Form>
+          )}
+        >
+          <Alert
+            message="登录遇到问题？请在工作时间（早上10点-晚上6点）联系对接老师或抖音搜索东东印尼语。"
+            type="success"
+          />
+          <Form.Item
+            name="title"
+            label="Title"
+            rules={[
+              {
+                required: true,
+                message: 'Please input the title of collection!',
+              },
+            ]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item name="description" label="Description">
+            <Input type="textarea" />
+          </Form.Item>
+          <Form.Item name="modifier" className="collection-create-form_last-form-item">
+            <Radio.Group>
+              <Radio value="public">Public</Radio>
+              <Radio value="private">Private</Radio>
+            </Radio.Group>
+          </Form.Item>
+        </Modal>
+
       </div>
     </PageContainer>
   )
