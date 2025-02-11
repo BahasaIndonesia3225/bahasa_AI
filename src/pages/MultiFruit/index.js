@@ -26,14 +26,17 @@ const MultiFruit = () => {
   //获取章节题目
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [sectionsList, setSectionsList] = useState([]);
+  const [updateParams, setUpdateParams] = useState({ stage: undefined, node: undefined });
   const showModal = () => { setIsModalOpen(true);};
-  const getSectionsListMethod = async (id, flag, pIndex, sIndex) => {
+  const getSectionsListMethod = async ({sItem, sIndex, pItem, pIndex}) => {
+    const {id, flag} = sItem;
     if(!((pIndex === 0 && sIndex === 0)) && flag === 0) {
       return message.warning('请先完成前面的关卡');
     }
     try {
       const { data = [] } = await service.MultiFruitApi.getSectionsList({category: id});
       setSectionsList(data)
+      setUpdateParams({ stage: pItem.id, node: id });
       showModal()
     } catch (error) {
       message.error('获取章节列表失败，请稍后再试');
@@ -47,11 +50,12 @@ const MultiFruit = () => {
       return;
     }
     //更新游戏进度
-    const params = { stage: undefined, node: undefined };
-    await service.MultiFruitApi.updateProgress(params);
+    await service.MultiFruitApi.updateProgress(updateParams);
     //提交成功
     setIsModalOpen(false);
     message.success('提交成功');
+    //刷新页面
+    getStageListMethod()
   };
   //不提交题目
   const handleCancel = () => {
@@ -98,17 +102,20 @@ const MultiFruit = () => {
                             bordered
                             size="small"
                             dataSource={children}
-                            renderItem={({id, name, flag}, sIndex) => (
-                              <List.Item
-                                style={{ cursor: 'pointer' }}
-                                key={id}
-                                onClick={() => getSectionsListMethod(id, flag, pIndex, sIndex)}>
-                                <Typography.Text>{name}</Typography.Text>
-                                {(!((pIndex === 0 && sIndex === 0)) && flag === 0) ?
-                                  <LockFilled style={{ fontSize: '16px', color: '#1677ff' }}/> :
-                                  <UnlockOutlined style={{ fontSize: '16px', color: '#ff4d4f' }} />}
-                              </List.Item>
-                            )}>
+                            renderItem={(sItem, sIndex) => {
+                              const {id, name, flag} = sItem;
+                              return (
+                                <List.Item
+                                  style={{ cursor: 'pointer' }}
+                                  key={id}
+                                  onClick={() => getSectionsListMethod({sItem, sIndex, pItem, pIndex})}>
+                                  <Typography.Text>{name}</Typography.Text>
+                                  {(!((pIndex === 0 && sIndex === 0)) && flag === 0) ?
+                                    <LockFilled style={{ fontSize: '16px', color: '#1677ff' }}/> :
+                                    <UnlockOutlined style={{ fontSize: '16px', color: '#ff4d4f' }} />}
+                                </List.Item>
+                              )
+                            }}>
                           </List>
                         ) : ''
                       }
