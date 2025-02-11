@@ -27,8 +27,8 @@ const MultiFruit = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [sectionsList, setSectionsList] = useState([]);
   const showModal = () => { setIsModalOpen(true);};
-  const getSectionsListMethod = async (id, flag) => {
-    if(flag === 0) {
+  const getSectionsListMethod = async (id, flag, pIndex, sIndex) => {
+    if(!((pIndex === 0 && sIndex === 0)) && flag === 0) {
       return message.warning('请先完成前面的关卡');
     }
     try {
@@ -40,21 +40,23 @@ const MultiFruit = () => {
     }
   }
   //提交题目
-  const handleOk = () => {
+  const handleOk = async () => {
     const results = sectionRefs.current.map((ref) => ref?.judgeResult?.());
     if (results.some((result) => !result)) {
       message.error('部分答案不正确，请检查后再提交');
       return;
     }
+    //更新游戏进度
+    const params = { stage: undefined, node: undefined };
+    await service.MultiFruitApi.updateProgress(params);
+    //提交成功
     setIsModalOpen(false);
     message.success('提交成功');
   };
-
   //不提交题目
   const handleCancel = () => {
     setIsModalOpen(false);
   };
-
   // 创建一个 ref 数组来存储每个子组件的 ref
   const sectionRefs = useRef([]);
   const saveRef = (index, el) => {
@@ -63,27 +65,17 @@ const MultiFruit = () => {
     }
   };
 
-  //登录相关
-  const [form] = Form.useForm();
-  const [formValues, setFormValues] = useState();
-  const [open, setOpen] = useState(false);
-  const onCreate = (values) => {
-    console.log('Received values of form: ', values);
-    setFormValues(values);
-    setOpen(false);
-  };
-
   return (
     <PageContainer
-      title={<div className="gradient-text" onClick={() => setOpen(true)}>印尼语东仔</div>}>
+      title={<div className="gradient-text">印尼语东仔</div>}>
       <div className='MultiFruit'>
         <Row gutter={[16, 16]}>
           {
-            stageList.map((item, index) => {
-              const {id, name, introduce, pic, children} = item;
+            stageList.map((pItem, pIndex) => {
+              const {id, name, introduce, pic, children} = pItem;
               return (
                 <Col key={id} xs={24} sm={24} md={12} lg={12} xl={8}>
-                  <Card title={`${index + 1}. ${name}`}>
+                  <Card title={`${pIndex + 1}. ${name}`}>
                     <Alert
                       style={{ marginBottom: 16 }}
                       message={introduce}
@@ -106,13 +98,13 @@ const MultiFruit = () => {
                             bordered
                             size="small"
                             dataSource={children}
-                            renderItem={({id, name, introduce, flag}, index) => (
+                            renderItem={({id, name, flag}, sIndex) => (
                               <List.Item
                                 style={{ cursor: 'pointer' }}
                                 key={id}
-                                onClick={() => getSectionsListMethod(id, flag)}>
+                                onClick={() => getSectionsListMethod(id, flag, pIndex, sIndex)}>
                                 <Typography.Text>{name}</Typography.Text>
-                                {(flag === 0) ?
+                                {(!((pIndex === 0 && sIndex === 0)) && flag === 0) ?
                                   <LockFilled style={{ fontSize: '16px', color: '#1677ff' }}/> :
                                   <UnlockOutlined style={{ fontSize: '16px', color: '#ff4d4f' }} />}
                               </List.Item>
@@ -153,58 +145,6 @@ const MultiFruit = () => {
             }
           </Row>
         </Modal>
-
-        <Modal
-          open={open}
-          title="请输入东东通行证"
-          okButtonProps={{
-            autoFocus: true,
-            htmlType: 'submit',
-          }}
-          onCancel={() => setOpen(false)}
-          destroyOnClose
-          modalRender={(dom) => (
-            <Form
-              layout="vertical"
-              form={form}
-              name="form_in_modal"
-              initialValues={{
-                modifier: 'public',
-              }}
-              clearOnDestroy
-              onFinish={(values) => onCreate(values)}
-            >
-              {dom}
-            </Form>
-          )}
-        >
-          <Alert
-            message="登录遇到问题？请在工作时间（早上10点-晚上6点）联系对接老师或抖音搜索东东印尼语。"
-            type="success"
-          />
-          <Form.Item
-            name="title"
-            label="Title"
-            rules={[
-              {
-                required: true,
-                message: 'Please input the title of collection!',
-              },
-            ]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item name="description" label="Description">
-            <Input type="textarea" />
-          </Form.Item>
-          <Form.Item name="modifier" className="collection-create-form_last-form-item">
-            <Radio.Group>
-              <Radio value="public">Public</Radio>
-              <Radio value="private">Private</Radio>
-            </Radio.Group>
-          </Form.Item>
-        </Modal>
-
       </div>
     </PageContainer>
   )
