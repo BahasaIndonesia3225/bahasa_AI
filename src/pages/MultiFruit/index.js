@@ -12,13 +12,19 @@ import "./index.less";
 
 const MultiFruit = () => {
   //获取阶段列表
-  const [stageList, setStageList] = useState([]);
   useEffect(() => { getStageListMethod() }, [])
+  const [stageList, setStageList] = useState([]);
+  const [stageId, setStageId] = useState(null);
   const getStageListMethod = async () => {
     try {
       const params = { pageNum: 1, pageSize: 100 }
       const { rows, total } = await service.MultiFruitApi.getStageList(params);
       setStageList(rows);
+      //获取未解锁的第一条数据ID
+      const pItem = rows.find(item => item?.flag === 0);
+      const sItem = pItem.children.find(item => item?.flag === 0);
+      const { id } = sItem;
+      setStageId(id);
     } catch (error) {
       message.error('获取阶段列表失败，请稍后再试');
     }
@@ -30,13 +36,13 @@ const MultiFruit = () => {
   const showModal = () => { setIsModalOpen(true);};
   const getSectionsListMethod = async ({sItem, sIndex, pItem, pIndex}) => {
     const {id, flag} = sItem;
-    if(!((pIndex === 0 && sIndex === 0)) && flag === 0) {
+    if(!(pIndex === 0 && sIndex === 0) && flag === 0 && id !== stageId) {
       return message.warning('请先完成前面的关卡');
     }
     try {
       const { data = [] } = await service.MultiFruitApi.getSectionsList({category: id});
       setSectionsList(data)
-      setUpdateParams({ stage: pItem.id, node: id });
+      setUpdateParams({ stage: pItem.stage, node: sItem.stage });
       showModal()
     } catch (error) {
       message.error('获取章节列表失败，请稍后再试');
@@ -110,9 +116,11 @@ const MultiFruit = () => {
                                   key={id}
                                   onClick={() => getSectionsListMethod({sItem, sIndex, pItem, pIndex})}>
                                   <Typography.Text>{name}</Typography.Text>
-                                  {(!((pIndex === 0 && sIndex === 0)) && flag === 0) ?
+                                  {
+                                    (!(pIndex === 0 && sIndex === 0) && flag === 0 && id !== stageId) ?
                                     <LockFilled style={{ fontSize: '16px', color: '#1677ff' }}/> :
-                                    <UnlockOutlined style={{ fontSize: '16px', color: '#ff4d4f' }} />}
+                                    <UnlockOutlined style={{ fontSize: '16px', color: '#ff4d4f' }} />
+                                  }
                                 </List.Item>
                               )
                             }}>

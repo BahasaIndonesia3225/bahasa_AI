@@ -2,6 +2,7 @@ import React, { useState, useEffect, forwardRef, useImperativeHandle } from 'rea
 import { useNavigate } from 'umi';
 import { Card, Tag, Divider, Button, Space, message, Flex } from 'antd';
 import { RedoOutlined, PlayCircleOutlined } from '@ant-design/icons';
+import { fisherYatesShuffle } from "@/utils/format";
 
 const tagStyle = {
   height: 22,
@@ -17,6 +18,7 @@ const QuestionType1 = forwardRef((props, ref) => {
   //设置词组
   useEffect(() => {
     let wordArray = title.split(' ');
+    wordArray = fisherYatesShuffle(wordArray);
     setBottomWordArray(wordArray);
   }, [])
 
@@ -30,6 +32,7 @@ const QuestionType1 = forwardRef((props, ref) => {
   //重置
   const handleResetWord = () => {
     let wordArray = title.split(' ');
+    wordArray = fisherYatesShuffle(wordArray);
     setBottomWordArray(wordArray);
     setTopWordArray([])
   }

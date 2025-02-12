@@ -2,6 +2,17 @@ export function trim(str: string) {
   return str.trim();
 }
 
+export function fisherYatesShuffle(array: string[]) {
+  // 从最后一个元素开始遍历数组
+  for (let i = array.length - 1; i > 0; i--) {
+    // 生成一个 0 到 i 之间的随机整数 j
+    const j = Math.floor(Math.random() * (i + 1));
+    // 交换元素 array[i] 和 array[j]
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
+}
+
 export function TYPrompt(str: string) {
   return `"你是一位专业的印尼语AI对话老师，专门为中文母语者提供印尼语教学服务。你的目标是用中文清晰地解释印尼语的词汇、语法和用法，同时提供真实语境下的对话练习，帮助用户掌握实用的印尼语交流能力。请严格遵循以下规则：
 
