@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback  } from 'react';
 import { useNavigate } from 'umi';
-import { Alert, Flex, message, Image, Col, Row, Card, List, Typography, Modal, Form, Input, Radio } from 'antd';
-import { LockFilled, UnlockOutlined } from '@ant-design/icons';
+import { Alert, Flex, message, Image, Col, Row, Card, List, Typography, Modal, Button, Popconfirm } from 'antd';
+import { LockFilled, UnlockOutlined, RedoOutlined } from '@ant-design/icons';
 import { PageContainer } from '@ant-design/pro-components';
 import service from '../../services';
 import QuestionType1 from './components/questionType1';
@@ -42,7 +42,7 @@ const MultiFruit = () => {
     try {
       const { data = [] } = await service.MultiFruitApi.getSectionsList({category: id});
       setSectionsList(data)
-      setUpdateParams({ stage: pItem.stage, node: sItem.stage });
+      setUpdateParams({ stage: pItem.stage, node: sItem.stage, id });
       showModal()
     } catch (error) {
       message.error('获取章节列表失败，请稍后再试');
@@ -55,14 +55,23 @@ const MultiFruit = () => {
       message.error('部分答案不正确，请检查后再提交');
       return;
     }
-    //更新游戏进度
-    await service.MultiFruitApi.updateProgress(updateParams);
     //提交成功
     setIsModalOpen(false);
     message.success('提交成功');
-    //刷新页面
-    getStageListMethod()
+    //更新游戏进度
+    if(updateParams.id === stageId) {
+      await service.MultiFruitApi.updateProgress(updateParams);
+      getStageListMethod();  //刷新页面
+    }
   };
+  //重置进度
+  const handleReset = async () => {
+    const stage = stageList[0].stage;
+    const node = stageList[0].children[0].stage;
+    await service.MultiFruitApi.updateProgress({stage, node});
+    message.success('重置进度成功');
+    getStageListMethod();
+  }
   //不提交题目
   const handleCancel = () => {
     setIsModalOpen(false);
@@ -77,7 +86,20 @@ const MultiFruit = () => {
 
   return (
     <PageContainer
-      title={<div className="gradient-text">印尼语东仔</div>}>
+      title={<div className="gradient-text">印尼语东仔</div>}
+      extra={[
+        <Popconfirm
+          title="确认重置进度？"
+          description="重置进度后将从第一阶段开始玩?"
+          onConfirm={() => handleReset()}
+          okText="确定"
+          cancelText="取消"
+        >
+          <Button icon={<RedoOutlined />}>
+            重置进度
+          </Button>
+        </Popconfirm>
+      ]}>
       <div className='MultiFruit'>
         <Row gutter={[16, 16]}>
           {
@@ -117,9 +139,10 @@ const MultiFruit = () => {
                                   onClick={() => getSectionsListMethod({sItem, sIndex, pItem, pIndex})}>
                                   <Typography.Text>{name}</Typography.Text>
                                   {
-                                    (!(pIndex === 0 && sIndex === 0) && flag === 0 && id !== stageId) ?
+                                    !(pIndex === 0 && sIndex === 0) ?
+                                    ((flag === 0 && id !== stageId) ?
                                     <LockFilled style={{ fontSize: '16px', color: '#1677ff' }}/> :
-                                    <UnlockOutlined style={{ fontSize: '16px', color: '#ff4d4f' }} />
+                                    <UnlockOutlined style={{ fontSize: '16px', color: '#ff4d4f' }} />) : ""
                                   }
                                 </List.Item>
                               )
