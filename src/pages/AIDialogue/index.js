@@ -138,8 +138,7 @@ const AIDialogue = () => {
   }, [defaultValue]);
 
   return (
-    <PageContainer
-      title={<div className="gradient-text">欢迎使用小曼同学</div>}>
+    <PageContainer title={<div className="gradient-text">欢迎使用小曼同学</div>}>
       <div className='AIDialogue'>
         <Bubble.List
           ref={listRef}

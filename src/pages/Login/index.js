@@ -3,6 +3,8 @@ import { useNavigate, useModel } from 'umi';
 import { Alert, Flex, message, Image, Col, Row, Card, List, Typography, Button, Form, Input, Radio } from 'antd';
 import { LockFilled, UnlockOutlined } from '@ant-design/icons';
 import { PageContainer } from '@ant-design/pro-components';
+import Texty from 'rc-texty';
+import 'rc-texty/assets/index.css';
 import service from '../../services';
 import {setCookie, getCookie, clearCookie} from '@/utils/rememberPassword';
 import "./index.less";
@@ -44,7 +46,7 @@ const Login = () => {
   }
 
   return (
-    <PageContainer title="请输入东东通行证">
+    <PageContainer title={<Texty>请输入东东通行证</Texty>}>
       <div className="Login">
         <Alert
           style={{ marginBottom: '20px' }}

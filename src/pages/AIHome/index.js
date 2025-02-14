@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { useNavigate } from 'umi';
 import { Avatar, Flex, Divider, Button  } from 'antd';
 import { Prompts, Sender } from '@ant-design/x';
+import Texty from 'rc-texty';
+import 'rc-texty/assets/index.css';
 import {
   BulbOutlined,
   InfoCircleOutlined,
@@ -69,11 +71,11 @@ const AIHome = () => {
             size={{xs: 24, sm: 32, md: 40, lg: 64, xl: 80, xxl: 100}}
             src={"https://taioassets.oss-cn-beijing.aliyuncs.com/Pics/DongMultiFruit/aiLogo.png"}
           />
-          <p>👋你好呀，我是小曼同学，有问题随时欢迎问我。</p>
+          <Texty>你好呀，我是小曼同学，有问题随时欢迎问我。</Texty>
           <Divider plain>试试这些问题</Divider>
           <Prompts
-            items={items}
             wrap
+            items={items}
             onItemClick={(info) => handleClickPrompt(info.data.description)}
           />
           <Sender
