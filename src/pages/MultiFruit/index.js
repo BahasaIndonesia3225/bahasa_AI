@@ -103,7 +103,7 @@ const MultiFruit = () => {
       <div className='MultiFruit'>
         <Row gutter={[16, 16]}>
           {
-            stageList.map((pItem, pIndex) => {
+              stageList.map((pItem, pIndex) => {
               const {id, name, introduce, pic, children} = pItem;
               return (
                 <Col key={id} xs={24} sm={24} md={12} lg={12} xl={8}>

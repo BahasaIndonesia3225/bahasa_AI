@@ -22,8 +22,9 @@ const QuestionType2 = forwardRef((props, ref) => {
   }, [])
 
   //单词选择
-  const handleSelectWord = (word) => {
-    const bottomWordArray_ = bottomWordArray.filter(word_ => word_ !== word);
+  const handleSelectWord = (word, index) => {
+    let bottomWordArray_ = JSON.parse(JSON.stringify(bottomWordArray));
+    bottomWordArray_.splice(index, 1);
     setBottomWordArray(bottomWordArray_);
     setTopWordArray([...topWordArray, word]);
   }
@@ -111,7 +112,7 @@ const QuestionType2 = forwardRef((props, ref) => {
       <Flex gap="4px 0" wrap>
         { bottomWordArray.map((word, index) => (
           <Tag
-            onClick={() => { handleSelectWord(word)} }
+            onClick={() => { handleSelectWord(word, index)} }
             key={index}
             style={tagStyle} >
             {word}
