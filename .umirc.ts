@@ -27,8 +27,8 @@ export default defineConfig({
     { name: '小曼同学', path: '/AIHome', component: './AIHome', layout: true },
     { name: '小曼同学', path: '/AIDialogue', component: './AIDialogue', layout: false },
 
-    { name: '多邻果', path: '/Login', component: './Login', layout: true},
-    { name: '多邻果', path: '/MultiFruit', component: './MultiFruit', layout: false },
+    { name: '印尼语东仔', path: '/Login', component: './Login', layout: true},
+    { name: '印尼语东仔', path: '/MultiFruit', component: './MultiFruit', layout: false },
   ],
   npmClient: 'pnpm',
 });

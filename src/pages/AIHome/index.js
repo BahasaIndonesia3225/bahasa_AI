@@ -63,8 +63,7 @@ const AIHome = () => {
   }
 
   return (
-    <PageContainer
-      title={<div className="gradient-text">小曼同学</div>}>
+    <PageContainer title={<div className="gradient-text">小曼同学</div>}>
       <div className='AIHome'>
         <Flex gap={24} vertical align="center">
           <Avatar
